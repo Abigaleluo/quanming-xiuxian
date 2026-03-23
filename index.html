@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全名修仙 - 2025升阶元年</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: white;
+            text-align: center;
+            padding: 50px;
+            min-height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            font-size: 3em;
+            background: linear-gradient(90deg, #fbbf24, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        .role-card {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 400px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .role-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+        .role-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌌 全名修仙</h1>
+    <p class="subtitle">万法归宗 · 十方法界 · 2025升阶元年</p >
+    
+    <div class="role-card" onclick="selectRole('mother')">
+        <div class="role-icon">🌸</div>
+        <h2>母亲·主母</h2>
+        <p>家族纽带，引领全家升阶</p >
+    </div>
+    
+    <div class="role-card" onclick="selectRole('father')">
+        <div class="role-icon">🐯</div>
+        <h2>父亲·家主</h2>
+        <p>家族支柱，威严与慈柔并存</p >
+    </div>
+    
+    <div class="role-card" onclick="selectRole('child')">
+        <div class="role-icon">🌱</div>
+        <h2>子女·传承</h2>
+        <p>代际桥梁，创新与传统融合</p >
+    </div>
+
+    <script>
+        function selectRole(role) {
+            alert('您选择了：' + role + '\n\n游戏开发中，敬请期待！');
+            console.log('Selected role:', role);
+        }
+    </script>
+</body>
+</html>
