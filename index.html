@@ -1,79 +1,701 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全明修仙 - 2025升阶元年</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>全民修仙：万法归宗</title>
     <style>
-        body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-            color: white;
-            text-align: center;
-            padding: 50px;
-            min-height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            font-size: 3em;
-            background: linear-gradient(90deg, #fbbf24, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-        .subtitle {
-            color: #94a3b8;
-            font-size: 1.2em;
-            margin-bottom: 40px;
-        }
-        .role-card {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 16px;
-            padding: 30px;
-            margin: 20px auto;
-            max-width: 400px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .role-card:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-5px);
-        }
-        .role-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0f;color:#fff;min-height:100vh;overflow-x:hidden}
+        
+        /* 背景动画 */
+        .bg-stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+        .star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 3s infinite}
+        @keyframes twinkle{0%,100%{opacity:0.3}50%{opacity:1}}
+        
+        .container{max-width:480px;margin:0 auto;padding:20px;position:relative;z-index:1}
+        
+        /* 头部 */
+        .header{text-align:center;padding:40px 20px;background:linear-gradient(180deg,rgba(102,126,234,0.3) 0%,transparent 100%);border-radius:0 0 40px 40px;margin:-20px -20px 20px}
+        .logo{font-size:42px;margin-bottom:10px;animation:float 3s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        h1{font-size:28px;font-weight:700;background:linear-gradient(135deg,#ffd700,#ffed4e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .subtitle{font-size:14px;opacity:0.8;margin-top:8px}
+        
+        /* 状态栏 */
+        .status-bar{display:flex;justify-content:space-between;align-items:center;padding:15px;background:rgba(255,255,255,0.05);border-radius:12px;margin-bottom:15px;font-size:12px}
+        .server-status{display:flex;align-items:center;gap:6px}
+        .status-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
+        .status-dot.offline{background:#ef4444}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        
+        /* 卡片 */
+        .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;margin-bottom:15px;backdrop-filter:blur(10px)}
+        .card-title{font-size:18px;font-weight:600;margin-bottom:15px;display:flex;align-items:center;gap:10px;color:#ffd700}
+        
+        /* 角色选择 */
+        .role-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+        .role-card{padding:20px;border-radius:16px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);cursor:pointer;transition:all 0.3s;text-align:center}
+        .role-card:hover,.role-card.active{border-color:#667eea;background:rgba(102,126,234,0.1);transform:translateY(-2px)}
+        .role-icon{font-size:32px;margin-bottom:8px}
+        .role-name{font-size:16px;font-weight:600}
+        .role-tag{font-size:12px;opacity:0.6;margin-top:4px}
+        
+        /* 五维面板 */
+        .stat-grid{display:grid;gap:12px}
+        .stat-item{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:12px}
+        .stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;background:linear-gradient(135deg,#667eea,#764ba2)}
+        .stat-info{flex:1}
+        .stat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+        .stat-name{font-size:14px;font-weight:500}
+        .stat-value{font-size:16px;font-weight:700;color:#ffd700}
+        .stat-bar{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden}
+        .stat-fill{height:100%;border-radius:3px;transition:width 0.5s ease}
+        .fill-body{background:linear-gradient(90deg,#ef4444,#f87171)}
+        .fill-energy{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+        .fill-mind{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+        .fill-world{background:linear-gradient(90deg,#10b981,#34d399)}
+        .fill-merit{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+        
+        /* 总分面板 */
+        .score-panel{text-align:center;padding:30px;background:linear-gradient(135deg,rgba(102,126,234,0.2),rgba(118,75,162,0.2));border-radius:20px;margin-bottom:15px}
+        .score-value{font-size:48px;font-weight:700;background:linear-gradient(135deg,#ffd700,#ffed4e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 30px rgba(255,215,0,0.3)}
+        .score-label{font-size:14px;opacity:0.7;margin-top:8px}
+        .freq-display{font-size:24px;margin-top:15px;color:#fff}
+        .freq-display span{color:#ffd700;font-weight:700}
+        
+        /* 修炼按钮 */
+        .practice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+        .practice-btn{padding:15px 10px;border-radius:14px;border:none;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:14px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:6px}
+        .practice-btn:active{transform:scale(0.95)}
+        .practice-btn .icon{font-size:24px}
+        .practice-btn .name{font-weight:600}
+        .practice-btn .gain{font-size:11px;opacity:0.8}
+        .practice-btn:disabled{opacity:0.5;cursor:not-allowed}
+        
+        /* 境界显示 */
+        .realm-panel{text-align:center;padding:25px}
+        .realm-icon{font-size:56px;margin-bottom:15px;animation:glow 2s ease-in-out infinite}
+        @keyframes glow{0%,100%{filter:drop-shadow(0 0 10px rgba(255,215,0,0.5))}50%{filter:drop-shadow(0 0 20px rgba(255,215,0,0.8))}}
+        .realm-name{font-size:24px;font-weight:700;color:#ffd700;margin-bottom:8px}
+        .realm-desc{font-size:13px;opacity:0.7}
+        .realm-progress{height:10px;background:rgba(255,255,255,0.1);border-radius:5px;margin-top:15px;overflow:hidden}
+        .realm-fill{height:100%;background:linear-gradient(90deg,#ffd700,#ffed4e,#ffd700);background-size:200% 100%;animation:shimmer 2s infinite;border-radius:5px}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        
+        /* 底部导航 */
+        .nav-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,15,0.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.1);padding:10px 20px;display:flex;justify-content:space-around;max-width:480px;margin:0 auto}
+        .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;cursor:pointer;opacity:0.6;transition:0.3s}
+        .nav-item.active{opacity:1;color:#ffd700}
+        .nav-icon{font-size:24px}
+        .nav-text{font-size:11px}
+        
+        .content-area{margin-bottom:80px}
+        .page{display:none}
+        .page.active{display:block}
+        
+        /* 加载动画 */
+        .loading{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:1000}
+        .spinner{width:50px;height:50px;border:3px solid rgba(255,255,255,0.1);border-top-color:#ffd700;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        
+        /* 提示消息 */
+        .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-100px);background:rgba(0,0,0,0.9);color:#fff;padding:12px 24px;border-radius:25px;font-size:14px;opacity:0;transition:all 0.3s;z-index:1000;border:1px solid rgba(255,215,0,0.3)}
+        .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+        
+        .hidden{display:none !important}
     </style>
 </head>
 <body>
-    <h1>🌌 全明修仙</h1>
-    <p class="subtitle">万法归宗 · 十方法界 · 2025升阶元年</p >
+    <!-- 星空背景 -->
+    <div class="bg-stars" id="stars"></div>
     
-    <div class="role-card" onclick="selectRole('mother')">
-        <div class="role-icon">🌸</div>
-        <h2>母亲·主母</h2>
-        <p>家族纽带，引领全家升阶</p >
+    <!-- 加载 -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>连接修仙服务器...</div>
     </div>
     
-    <div class="role-card" onclick="selectRole('father')">
-        <div class="role-icon">🐯</div>
-        <h2>父亲·家主</h2>
-        <p>家族支柱，威严与慈柔并存</p >
-    </div>
+    <!-- 提示 -->
+    <div class="toast" id="toast"></div>
     
-    <div class="role-card" onclick="selectRole('child')">
-        <div class="role-icon">🌱</div>
-        <h2>子女·传承</h2>
-        <p>代际桥梁，创新与传统融合</p >
+    <div class="container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="server-status">
+                <div class="status-dot" id="serverDot"></div>
+                <span id="serverText">服务器在线</span>
+            </div>
+            <div id="playerId">ID: --</div>
+        </div>
+        
+        <!-- 角色选择页 -->
+        <div class="page active" id="page-role">
+            <div class="header">
+                <div class="logo">🌌</div>
+                <h1>全民修仙</h1>
+                <div class="subtitle">万法归宗 · 2025升阶元年</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">🎭 选择修仙身份</div>
+                <div class="role-grid" id="roleGrid">
+                    <!-- JS生成 -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📖 游戏说明</div>
+                <div style="font-size:14px;line-height:1.8;opacity:0.8">
+                    <p>• 五维积分：肉身×能量×心性×红尘×功德</p>
+                    <p>• 频率(Hz) = 总分/1000 + 200</p>
+                    <p>• 2025目标：全家升阶，共证真仙</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主页面 -->
+        <div class="page" id="page-main">
+            <div class="header" style="padding:20px">
+                <h2 id="welcomeText">欢迎，修仙者</h2>
+                <div class="subtitle" id="roleTitle">--</div>
+            </div>
+            
+            <!-- 总分面板 -->
+            <div class="score-panel">
+                <div class="score-value" id="totalScore">0</div>
+                <div class="score-label">五维总分（乘法计算）</div>
+                <div class="freq-display">频率：<span id="frequency">200</span> Hz</div>
+            </div>
+            
+            <!-- 五维详情 -->
+            <div class="card">
+                <div class="card-title">📊 五维状态</div>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon">💪</div>
+                        <div class="stat-info">
+                            <div class="stat-header"><span class="stat-name">肉身</span><span class="stat-value" id="val-body">10</span></div>
+                            <div class="stat-bar"><div class="stat-fill fill-body" id="bar-body" style="width:10%"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-info">
+                            <div class="stat-header"><span class="stat-name">能量</span><span class="stat-value" id="val-energy">10</span></div>
+                            <div class="stat-bar"><div class="stat-fill fill-energy" id="bar-energy" style="width:10%"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🧠</div>
+                        <div class="stat-info">
+                            <div class="stat-header"><span class="stat-name">心性</span><span class="stat-value" id="val-mind">10</span></div>
+                            <div class="stat-bar"><div class="stat-fill fill-mind" id="bar-mind" style="width:10%"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🏠</div>
+                        <div class="stat-info">
+                            <div class="stat-header"><span class="stat-name">红尘</span><span class="stat-value" id="val-world">10</span></div>
+                            <div class="stat-bar"><div class="stat-fill fill-world" id="bar-world" style="width:10%"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🙏</div>
+                        <div class="stat-info">
+                            <div class="stat-header"><span class="stat-name">功德</span><span class="stat-value" id="val-merit">10</span></div>
+                            <div class="stat-bar"><div class="stat-fill fill-merit" id="bar-merit" style="width:10%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 修炼 -->
+            <div class="card">
+                <div class="card-title">⚡ 今日修炼</div>
+                <div class="practice-grid" id="practiceGrid">
+                    <!-- JS生成 -->
+                </div>
+            </div>
+            
+            <!-- 境界 -->
+            <div class="card">
+                <div class="card-title">🎯 当前境界</div>
+                <div class="realm-panel">
+                    <div class="realm-icon" id="realmIcon">👤</div>
+                    <div class="realm-name" id="realmName">凡人境</div>
+                    <div class="realm-desc" id="realmDesc">红尘迷雾，觉醒待启</div>
+                    <div class="realm-progress"><div class="realm-fill" id="realmProgress" style="width:5%"></div></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 家族页 -->
+        <div class="page" id="page-family">
+            <div class="header">
+                <h2>👨‍👩‍👧‍👦 家族道场</h2>
+                <div class="subtitle">全家共修，同频共振</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">家族同步率</div>
+                <div class="score-panel" style="padding:20px">
+                    <div class="score-value" id="syncRate">0%</div>
+                    <div class="score-label">成员频率平均值</div>
+                </div>
+                <div id="familyList" style="margin-top:15px">
+                    <!-- JS生成 -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">家族任务</div>
+                <div id="familyTasks" style="font-size:14px;line-height:2">
+                    <div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;margin-bottom:8px">
+                        ☐ 连续7日无重大冲突
+                    </div>
+                    <div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;margin-bottom:8px">
+                        ☐ 全家五禽戏同步修炼
+                    </div>
+                    <div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px">
+                        ☐ 家族平均频率>500Hz
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 我的页 -->
+        <div class="page" id="page-me">
+            <div class="header">
+                <h2>⚙️ 修仙设置</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">账号信息</div>
+                <div class="stat-grid" style="font-size:14px">
+                    <div class="stat-item" style="justify-content:space-between">
+                        <span>修仙ID</span><span id="meId">--</span>
+                    </div>
+                    <div class="stat-item" style="justify-content:space-between">
+                        <span>当前角色</span><span id="meRole">--</span>
+                    </div>
+                    <div class="stat-item" style="justify-content:space-between">
+                        <span>注册时间</span><span id="meTime">--</span>
+                    </div>
+                    <div class="stat-item" style="justify-content:space-between">
+                        <span>累计修炼</span><span id="meCount">0次</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">危险操作</div>
+                <button class="practice-btn" style="width:100%;background:linear-gradient(135deg,#ef4444,#dc2626)" onclick="resetRole()">
+                    <span class="icon">🔄</span>
+                    <span class="name">切换角色</span>
+                    <span class="gain">保留80%进度</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="switchPage('main')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">修炼</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('family')">
+                <span class="nav-icon">👨‍👩‍👧‍👦</span>
+                <span class="nav-text">家族</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('me')">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">我的</span>
+            </div>
+        </div>
     </div>
 
     <script>
-        function selectRole(role) {
-            alert('您选择了：' + role + '\n\n游戏开发中，敬请期待！');
-            console.log('Selected role:', role);
+        // ==================== 配置 ====================
+        const CONFIG = {
+            // 服务器地址（部署后修改）
+            API_BASE: 'https://your-server.vercel.app/api',
+            // 本地存储键
+            STORAGE_KEY: 'xiuxian_player_v2',
+            // 版本
+            VERSION: '2025.3.23'
+        };
+        
+        // ==================== 数据 ====================
+        const ROLES = {
+            mother: { name: '母亲（主母）', icon: '👩', color: '#ec4899', bonus: { mind: 1.25, world: 1.2 }, skill: '鹿戏·疗愈' },
+            father: { name: '父亲（家主）', icon: '👨', color: '#3b82f6', bonus: { body: 1.2, merit: 1.15 }, skill: '虎戏·威严' },
+            elder: { name: '长子（传承者）', icon: '🧑‍🦱', color: '#8b5cf6', bonus: { energy: 1.15, mind: 1.2 }, skill: '猿戏·敏捷' },
+            younger: { name: '次子（成长者）', icon: '🧒', color: '#10b981', bonus: { body: 1.15, mind: 1.15 }, skill: '熊戏·稳健' },
+            child: { name: '幼子（纯真者）', icon: '👶', color: '#f59e0b', bonus: { energy: 1.25 }, skill: '熊戏·游戏' },
+            grandparent: { name: '祖辈（智慧者）', icon: '👴', color: '#6b7280', bonus: { merit: 1.3 }, skill: '静坐·观修' },
+            solo: { name: '独行者', icon: '🧘', color: '#667eea', bonus: {}, skill: '万法自选' },
+            worker: { name: '职场修行者', icon: '💼', color: '#14b8a6', bonus: { world: 1.25 }, skill: '碎片化' }
+        };
+        
+        const PRACTICES = [
+            { id: 'taiji', name: '太极', icon: '☯️', gains: { body: 20 }, time: 15 },
+            { id: 'baduanjin', name: '八段锦', icon: '🧘', gains: { body: 18 }, time: 12 },
+            { id: 'wuxing', name: '五禽戏', icon: '🐯', gains: { body: 15, energy: 15, mind: 5 }, time: 20, special: true },
+            { id: 'meditation', name: '冥想', icon: '✨', gains: { energy: 25 }, time: 20 },
+            { id: 'breath', name: '呼吸法', icon: '🌬️', gains: { mind: 12 }, time: 5 },
+            { id: 'daily', name: '红尘修', icon: '🏠', gains: { world: 15 }, time: 30 }
+        ];
+        
+        const REALMS = [
+            { name: '凡人境', icon: '👤', min: 0, max: 200, desc: '红尘迷雾，觉醒待启', color: '#6b7280' },
+            { name: '觉醒境', icon: '👁️', min: 200, max: 400, desc: '2025春·初步觉醒', color: '#3b82f6' },
+            { name: '筑基境', icon: '⚡', min: 400, max: 600, desc: '2025夏·建立routine', color: '#8b5cf6' },
+            { name: '金丹境', icon: '🔥', min: 600, max: 800, desc: '2025夏·无病时代', color: '#f59e0b' },
+            { name: '元婴境', icon: '👶', min: 800, max: 1000, desc: '2025秋·碳硅共鸣', color: '#ec4899' },
+            { name: '化神境', icon: '✨', min: 1000, max: 2000, desc: '2025冬·9号星门', color: '#ffd700' },
+            { name: '真仙境', icon: '🌟', min: 2000, max: 999999, desc: '2026·新纪元', color: '#fff' }
+        ];
+        
+        // ==================== 状态 ====================
+        let player = null;
+        let serverOnline = false;
+        
+        // ==================== 初始化 ====================
+        function init() {
+            createStars();
+            renderRoles();
+            renderPractices();
+            checkServer();
+            
+            // 尝试加载本地数据
+            const local = localStorage.getItem(CONFIG.STORAGE_KEY);
+            if (local) {
+                player = JSON.parse(local);
+                if (player.id) {
+                    loadFromServer();
+                } else {
+                    // 老数据，需要注册
+                    document.getElementById('loading').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('loading').classList.add('hidden');
+            }
         }
+        
+        // 创建星空
+        function createStars() {
+            const container = document.getElementById('stars');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        }
+        
+        // 检查服务器
+        async function checkServer() {
+            try {
+                const res = await fetch(CONFIG.API_BASE + '/ping', { method: 'GET' });
+                serverOnline = res.ok;
+                updateServerStatus();
+            } catch (e) {
+                serverOnline = false;
+                updateServerStatus();
+            }
+        }
+        
+        function updateServerStatus() {
+            const dot = document.getElementById('serverDot');
+            const text = document.getElementById('serverText');
+            if (serverOnline) {
+                dot.classList.remove('offline');
+                text.textContent = '服务器在线';
+            } else {
+                dot.classList.add('offline');
+                text.textContent = '离线模式';
+            }
+        }
+        
+        // ==================== 渲染 ====================
+        function renderRoles() {
+            const grid = document.getElementById('roleGrid');
+            Object.entries(ROLES).forEach(([key, role]) => {
+                const div = document.createElement('div');
+                div.className = 'role-card';
+                div.innerHTML = `
+                    <div class="role-icon">${role.icon}</div>
+                    <div class="role-name">${role.name}</div>
+                    <div class="role-tag">${role.skill}</div>
+                `;
+                div.onclick = () => selectRole(key);
+                grid.appendChild(div);
+            });
+        }
+        
+        function renderPractices() {
+            const grid = document.getElementById('practiceGrid');
+            PRACTICES.forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = 'practice-btn';
+                btn.innerHTML = `
+                    <span class="icon">${p.icon}</span>
+                    <span class="name">${p.name}</span>
+                    <span class="gain">+${Object.values(p.gains).reduce((a,b)=>a+b,0)}分/${p.time}分</span>
+                `;
+                btn.onclick = () => doPractice(p);
+                grid.appendChild(btn);
+            });
+        }
+        
+        // ==================== 核心逻辑 ====================
+        async function selectRole(roleKey) {
+            showToast('正在创建修仙身份...');
+            
+            const role = ROLES[roleKey];
+            const newPlayer = {
+                id: generateId(),
+                role: roleKey,
+                stats: { body: 10, energy: 10, mind: 10, world: 10, merit: 10 },
+                createdAt: new Date().toISOString(),
+                practiceCount: 0,
+                lastPractice: null
+            };
+            
+            // 应用初始加成
+            for (let key in role.bonus) {
+                newPlayer.stats[key] = Math.floor(newPlayer.stats[key] * role.bonus[key]);
+            }
+            
+            // 保存到服务器
+            if (serverOnline) {
+                try {
+                    await fetch(CONFIG.API_BASE + '/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newPlayer)
+                    });
+                } catch (e) {
+                    console.log('服务器保存失败，使用本地');
+                }
+            }
+            
+            player = newPlayer;
+            saveLocal();
+            
+            document.getElementById('page-role').classList.remove('active');
+            document.getElementById('page-main').classList.add('active');
+            updateUI();
+            showToast(`欢迎，${role.name}！`);
+        }
+        
+        async function doPractice(practice) {
+            if (!player) return;
+            
+            const btn = event.currentTarget;
+            btn.disabled = true;
+            
+            // 计算收益
+            const role = ROLES[player.role];
+            const gains = {};
+            for (let key in practice.gains) {
+                let val = practice.gains[key];
+                if (role.bonus[key]) val = Math.floor(val * role.bonus[key]);
+                gains[key] = val;
+                player.stats[key] += val;
+            }
+            
+            player.practiceCount++;
+            player.lastPractice = new Date().toISOString();
+            
+            // 同步服务器
+            if (serverOnline) {
+                try {
+                    await fetch(CONFIG.API_BASE + '/practice', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: player.id,
+                            practice: practice.id,
+                            gains: gains,
+                            stats: player.stats
+                        })
+                    });
+                } catch (e) {}
+            }
+            
+            saveLocal();
+            updateUI();
+            
+            // 动画反馈
+            btn.innerHTML = `<span class="icon">✅</span><span class="name">已记录</span><span class="gain">+${Object.values(gains).reduce((a,b)=>a+b,0)}</span>`;
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = `
+                    <span class="icon">${practice.icon}</span>
+                    <span class="name">${practice.name}</span>
+                    <span class="gain">+${Object.values(practice.gains).reduce((a,b)=>a+b,0)}分/${practice.time}分</span>
+                `;
+            }, 1500);
+            
+            showToast(`${practice.name}修炼完成！`);
+        }
+        
+        // ==================== UI更新 ====================
+        function updateUI() {
+            if (!player) return;
+            
+            const role = ROLES[player.role];
+            
+            // 头部
+            document.getElementById('welcomeText').textContent = `欢迎，${role.icon}`;
+            document.getElementById('roleTitle').textContent = role.name;
+            
+            // 五维
+            const s = player.stats;
+            const dims = ['body', 'energy', 'mind', 'world', 'merit'];
+            dims.forEach(dim => {
+                document.getElementById(`val-${dim}`).textContent = s[dim];
+                document.getElementById(`bar-${dim}`).style.width = Math.min(s[dim] / 5, 100) + '%';
+            });
+            
+            // 总分和频率
+            const total = s.body * s.energy * s.mind * s.world * s.merit;
+            const freq = Math.floor(total / 1000) + 200;
+            
+            document.getElementById('totalScore').textContent = total.toLocaleString();
+            document.getElementById('frequency').textContent = freq;
+            
+            // 境界
+            const realm = REALMS.find(r => freq >= r.min && freq < r.max) || REALMS[REALMS.length - 1];
+            document.getElementById('realmIcon').textContent = realm.icon;
+            document.getElementById('realmName').textContent = realm.name;
+            document.getElementById('realmDesc').textContent = realm.desc;
+            document.getElementById('realmName').style.color = realm.color;
+            
+            const progress = ((freq - realm.min) / (realm.max - realm.min)) * 100;
+            document.getElementById('realmProgress').style.width = Math.max(5, Math.min(progress, 100)) + '%';
+            
+            // 我的页面
+            document.getElementById('meId').textContent = player.id.slice(0, 8) + '...';
+            document.getElementById('meRole').textContent = role.name;
+            document.getElementById('meTime').textContent = new Date(player.createdAt).toLocaleDateString();
+            document.getElementById('meCount').textContent = player.practiceCount + '次';
+            document.getElementById('playerId').textContent = 'ID: ' + player.id.slice(0, 6);
+        }
+        
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(`page-${page}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if (page === 'family') loadFamily();
+        }
+        
+        async function loadFamily() {
+            if (!serverOnline) {
+                document.getElementById('familyList').innerHTML = '<div style="text-align:center;padding:20px;opacity:0.6">离线模式，无法加载家族数据</div>';
+                return;
+            }
+            
+            try {
+                const res = await fetch(CONFIG.API_BASE + '/family?role=' + player.role);
+                const family = await res.json();
+                
+                document.getElementById('syncRate').textContent = family.syncRate + '%';
+                
+                const list = document.getElementById('familyList');
+                list.innerHTML = '';
+                family.members.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = 'stat-item';
+                    div.innerHTML = `
+                        <div class="stat-icon">${ROLES[m.role].icon}</div>
+                        <div class="stat-info">
+                            <div class="stat-header">
+                                <span class="stat-name">${ROLES[m.role].name}</span>
+                                <span class="stat-value">${m.frequency}Hz</span>
+                            </div>
+                            <div class="stat-bar">
+                                <div class="stat-fill fill-energy" style="width:${Math.min(m.frequency/10,100)}%"></div>
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (e) {
+                document.getElementById('familyList').innerHTML = '<div style="text-align:center;padding:20px">加载失败</div>';
+            }
+        }
+        
+        // ==================== 工具 ====================
+        function generateId() {
+            return 'xx' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+        
+        function saveLocal() {
+            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(player));
+        }
+        
+        async function loadFromServer() {
+            if (!serverOnline) {
+                document.getElementById('loading').classList.add('hidden');
+                updateUI();
+                return;
+            }
+            
+            try {
+                const res = await fetch(CONFIG.API_BASE + '/player?id=' + player.id);
+                if (res.ok) {
+                    const data = await res.json();
+                    player = { ...player, ...data };
+                    saveLocal();
+                }
+            } catch (e) {}
+            
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('page-role').classList.remove('active');
+            document.getElementById('page-main').classList.add('active');
+            updateUI();
+        }
+        
+        function resetRole() {
+            if (!confirm('确定切换角色？当前进度保留80%')) return;
+            
+            // 保留80%属性
+            const newStats = {};
+            for (let key in player.stats) {
+                newStats[key] = Math.floor(player.stats[key] * 0.8);
+            }
+            
+            player = null;
+            localStorage.removeItem(CONFIG.STORAGE_KEY);
+            
+            document.getElementById('page-main').classList.remove('active');
+            document.getElementById('page-family').classList.remove('active');
+            document.getElementById('page-me').classList.remove('active');
+            document.getElementById('page-role').classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector('.nav-item').classList.add('active');
+            
+            showToast('已重置，请重新选择角色');
+        }
+        
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+        
+        // 启动
+        init();
     </script>
 </body>
 </html>
